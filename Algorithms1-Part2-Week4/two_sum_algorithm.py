@@ -20,31 +20,33 @@ def file_processing(file_name):
     return numbers
 
 def alg(file_name):
-    numbers = file_processing(file_name)
-    numbers.sort()
-    numbers_set = set(numbers)
-    numbers_processed = set()
-    print("done processing the input file")
-    sums = set()
     lower_range = -10000
     upper_range = 10000
-    t_set = set([i for i in range(lower_range, upper_range)])
+    
+    numbers = file_processing(file_name)
+    print("done processing the input file")
+    
+    numbers.sort()
+    min_counter = 0
+    max_counter = len(numbers) - 1
+    sums = set()
+    
     start_time = time.time()
-    for idx, n in enumerate(numbers):
-        temp = set()
-        if n in numbers_processed:
-            continue
+    while min_counter < max_counter:
+        if numbers[min_counter] + numbers[max_counter] < lower_range:
+            min_counter += 1
+        elif numbers[min_counter] + numbers[max_counter] > upper_range:
+            max_counter -= 1
         else:
-            numbers_processed.add(n)
-            if idx % 1000 == 0:
-                print("size of t: {}".format(len(t_set)))
-                print("currently at generation {}".format(idx))
-                print("it has taken {} s".format(start_time - time.time()))
-            for t in t_set:
-                if t - n in numbers: # to satisfy the x + y = t condition (x, y both from the numbers set)
-                    sums.add(t)
-                    temp.add(t)
-        t_set = t_set - temp
+            for i in range(max_counter, min_counter - 1, -1):
+                two_sum = numbers[min_counter] + numbers[i]
+                if two_sum < lower_range:
+                    break
+                else:
+                    sums.add(numbers[min_counter] + numbers[i])
+            min_counter += 1
+    print("done using a loop")
+    print(time.time() - start_time)
     return len(sums)
 
-print(alg("2sum.txt"))
+# print(alg("2sum.txt"))
